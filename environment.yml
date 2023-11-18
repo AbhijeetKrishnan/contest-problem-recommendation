@@ -1,0 +1,13 @@
+name: cp-rec
+channels:
+    - pytorch
+    - defaults
+dependencies:
+    - python
+    - pytorch-gpu
+    - requests
+    - numpy
+    - pandas
+    - pydantic
+    - ipykernel
+    - pip
