@@ -1,13 +1,16 @@
 name: cp-rec
 channels:
     - pytorch
+    - nvidia
     - defaults
 dependencies:
     - python
-    - pytorch-gpu
+    - pytorch
+    - pytorch-cuda=12.1
     - requests
     - numpy
     - pandas
     - pydantic
-    - ipykernel
     - pip
+    - pip:
+          - types-requests
