@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import Enum
 from typing import List, Optional
 
 from pydantic import (BaseModel, Field, HttpUrl, NonNegativeFloat,
@@ -78,17 +78,17 @@ class RatingChange(BaseModel):
 
 
 class ContestType(str, Enum):
-    CF = 'CF'
-    IOI = 'IOI'
-    ICPC = 'ICPC'
+    CF = "CF"
+    IOI = "IOI"
+    ICPC = "ICPC"
 
 
 class ContestPhase(str, Enum):
-    BEFORE = 'BEFORE'
-    CODING = 'CODING'
-    PENDING_SYSTEM_TEST = 'PENDING_SYSTEM_TEST'
-    SYSTEM_TEST = 'SYSTEM_TEST'
-    FINISHED = 'FINISHED'
+    BEFORE = "BEFORE"
+    CODING = "CODING"
+    PENDING_SYSTEM_TEST = "PENDING_SYSTEM_TEST"
+    SYSTEM_TEST = "SYSTEM_TEST"
+    FINISHED = "FINISHED"
 
 
 class Contest(BaseModel):
@@ -107,7 +107,8 @@ class Contest(BaseModel):
     description: Optional[str]
     difficulty: Optional[int] = Field(ge=1, le=5)
     kind: Optional[str] = Field(
-        pattern=r'Official ICPC Contest|Official School Contest|Opencup Contest|School/University/City/Region Championship|Training Camp Contest|Official International Personal Contest|Training Contest')
+        pattern=r"Official ICPC Contest|Official School Contest|Opencup Contest|School/University/City/Region Championship|Training Camp Contest|Official International Personal Contest|Training Contest"
+    )
     icpcRegion: Optional[str]
     country: Optional[str]
     city: Optional[str]
@@ -115,11 +116,11 @@ class Contest(BaseModel):
 
 
 class ParticipantType(str, Enum):
-    CONTESTANT = 'CONTESTANT'
-    PRACTICE = 'PRACTICE'
-    VIRTUAL = 'VIRTUAL'
-    MANAGER = 'MANAGER'
-    OUT_OF_COMPETITION = 'OUT_OF_COMPETITION'
+    CONTESTANT = "CONTESTANT"
+    PRACTICE = "PRACTICE"
+    VIRTUAL = "VIRTUAL"
+    MANAGER = "MANAGER"
+    OUT_OF_COMPETITION = "OUT_OF_COMPETITION"
 
 
 class Member(BaseModel):
@@ -143,8 +144,8 @@ class Party(BaseModel):
 
 
 class ProblemType(str, Enum):
-    PROGRAMMING = 'PROGRAMMING'
-    QUESTION = 'QUESTION'
+    PROGRAMMING = "PROGRAMMING"
+    QUESTION = "QUESTION"
 
 
 class Problem(BaseModel):
@@ -169,39 +170,39 @@ class ProblemStatistics(BaseModel):
 
 
 class Verdict(str, Enum):
-    FAILED = 'FAILED'
-    OK = 'OK'
-    PARTIAL = 'PARTIAL'
-    COMPILATION_ERROR = 'COMPILATION_ERROR'
-    RUNTIME_ERROR = 'RUNTIME_ERROR'
-    WRONG_ANSWER = 'WRONG_ANSWER'
-    PRESENTATION_ERROR = 'PRESENTATION_ERROR'
-    TIME_LIMIT_EXCEEDED = 'TIME_LIMIT_EXCEEDED'
-    MEMORY_LIMIT_EXCEEDED = 'MEMORY_LIMIT_EXCEEDED'
-    IDLENESS_LIMIT_EXCEEDED = 'IDLENESS_LIMIT_EXCEEDED'
-    SECURITY_VIOLATED = 'SECURITY_VIOLATED'
-    CRASHED = 'CRASHED'
-    INPUT_PREPARATION_CRASHED = 'INPUT_PREPARATION_CRASHED'
-    CHALLENGED = 'CHALLENGED'
-    SKIPPED = 'SKIPPED'
-    TESTING = 'TESTING'
-    REJECTED = 'REJECTED'
+    FAILED = "FAILED"
+    OK = "OK"
+    PARTIAL = "PARTIAL"
+    COMPILATION_ERROR = "COMPILATION_ERROR"
+    RUNTIME_ERROR = "RUNTIME_ERROR"
+    WRONG_ANSWER = "WRONG_ANSWER"
+    PRESENTATION_ERROR = "PRESENTATION_ERROR"
+    TIME_LIMIT_EXCEEDED = "TIME_LIMIT_EXCEEDED"
+    MEMORY_LIMIT_EXCEEDED = "MEMORY_LIMIT_EXCEEDED"
+    IDLENESS_LIMIT_EXCEEDED = "IDLENESS_LIMIT_EXCEEDED"
+    SECURITY_VIOLATED = "SECURITY_VIOLATED"
+    CRASHED = "CRASHED"
+    INPUT_PREPARATION_CRASHED = "INPUT_PREPARATION_CRASHED"
+    CHALLENGED = "CHALLENGED"
+    SKIPPED = "SKIPPED"
+    TESTING = "TESTING"
+    REJECTED = "REJECTED"
 
 
 class TestSet(str, Enum):
-    SAMPLES = 'SAMPLES'
-    PRETESTS = 'PRETESTS'
-    TESTS = 'TESTS'
-    TESTS1 = 'TESTS1'
-    TESTS2 = 'TESTS2'
-    TESTS3 = 'TESTS3'
-    TESTS4 = 'TESTS4'
-    TESTS5 = 'TESTS5'
-    TESTS6 = 'TESTS6'
-    TESTS7 = 'TESTS7'
-    TESTS8 = 'TESTS8'
-    TESTS9 = 'TESTS9'
-    TESTS10 = 'TESTS10'
+    SAMPLES = "SAMPLES"
+    PRETESTS = "PRETESTS"
+    TESTS = "TESTS"
+    TESTS1 = "TESTS1"
+    TESTS2 = "TESTS2"
+    TESTS3 = "TESTS3"
+    TESTS4 = "TESTS4"
+    TESTS5 = "TESTS5"
+    TESTS6 = "TESTS6"
+    TESTS7 = "TESTS7"
+    TESTS8 = "TESTS8"
+    TESTS9 = "TESTS9"
+    TESTS10 = "TESTS10"
 
 
 class Submission(BaseModel):
@@ -223,14 +224,14 @@ class Submission(BaseModel):
 
 
 class HackVerdict(str, Enum):
-    HACK_SUCCESSFUL = 'HACK_SUCCESSFUL'
-    HACK_UNSUCCESSFUL = 'HACK_UNSUCCESSFUL'
-    INVALID_INPUT = 'INVALID_INPUT'
-    GENERATOR_INCOMPILABLE = 'GENERATOR_INCOMPILABLE'
-    GENERATOR_CRASHED = 'GENERATOR_CRASHED'
-    IGNORED = 'IGNORED'
-    TESTING = 'TESTING'
-    OTHER = 'OTHER'
+    HACK_SUCCESSFUL = "HACK_SUCCESSFUL"
+    HACK_UNSUCCESSFUL = "HACK_UNSUCCESSFUL"
+    INVALID_INPUT = "INVALID_INPUT"
+    GENERATOR_INCOMPILABLE = "GENERATOR_INCOMPILABLE"
+    GENERATOR_CRASHED = "GENERATOR_CRASHED"
+    IGNORED = "IGNORED"
+    TESTING = "TESTING"
+    OTHER = "OTHER"
 
 
 class JudgeProtocol(BaseModel):
@@ -253,8 +254,8 @@ class Hack(BaseModel):
 
 
 class ProblemResultType(str, Enum):
-    PRELIMINARY = 'PRELIMINARY'
-    FINAL = 'FINAL'
+    PRELIMINARY = "PRELIMINARY"
+    FINAL = "FINAL"
 
 
 class ProblemResult(BaseModel):

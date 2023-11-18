@@ -11,6 +11,9 @@ dependencies:
     - numpy
     - pandas
     - pydantic
+    - pre-commit
     - pip
     - pip:
           - types-requests
+          - black
+          - fsspec
