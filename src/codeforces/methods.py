@@ -188,6 +188,8 @@ def getContestStandings(
         "from": from_,
         "count": count,
         "handles": ";".join(handles) if handles else handles,
+        "room": room,
+        "showUnofficial": showUnofficial,
     }
     try:
         r = requests.get(url, payload, timeout=timeout)
@@ -470,9 +472,7 @@ def getUserStatus(
     methodName = "user.status"
     url = f"{CF_API}/{methodName}"
     timeout = DEFAULT_TIMEOUT
-    payload = {
-        "handle": handle,
-    }
+    payload = {"handle": handle, "from": from_, "count": count}
 
     try:
         r = requests.get(url, payload, timeout=timeout)
