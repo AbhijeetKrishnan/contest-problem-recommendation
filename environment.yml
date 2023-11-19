@@ -8,6 +8,7 @@ dependencies:
     - pytorch
     - pytorch-cuda=12.1
     - requests
+    - requests-ratelimiter
     - numpy
     - pandas
     - pydantic

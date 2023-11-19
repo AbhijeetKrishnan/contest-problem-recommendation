@@ -3,9 +3,9 @@ import secrets
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
-import requests
 from pydantic import BaseModel
 from requests.exceptions import ConnectionError, HTTPError, Timeout
+from requests_ratelimiter import LimiterSession
 
 from .objects import (
     BlogEntry,
@@ -23,6 +23,9 @@ from .objects import (
 
 DEFAULT_TIMEOUT = 9.01
 CF_API = "https://codeforces.com/api"
+
+session = LimiterSession(per_second=0.5)
+start = time.time()
 
 
 def getCfAuth(
@@ -53,7 +56,7 @@ def getBlogEntryComments(blogEntryId: int) -> Optional[List[Comment]]:
     timeout = DEFAULT_TIMEOUT
     payload = {"blogEntryId": blogEntryId}
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Comment.parse_obj(comment) for comment in result]
@@ -76,7 +79,7 @@ def getBlogEntryView(blogEntryId: int) -> Optional[BlogEntry]:
     timeout = DEFAULT_TIMEOUT
     payload = {"blogEntryId": blogEntryId}
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return BlogEntry.parse_obj(result)
@@ -99,7 +102,7 @@ def getContestHacks(contestId: int, asManager: Optional[bool]) -> Optional[List[
     timeout = DEFAULT_TIMEOUT
     payload = {"contestId": contestId, "asManager": asManager}
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Hack.parse_obj(hack) for hack in result]
@@ -122,7 +125,7 @@ def getContestList(gym: Optional[bool]) -> Optional[List[Contest]]:
     timeout = DEFAULT_TIMEOUT
     payload = {"gym": gym}
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Contest.parse_obj(contest) for contest in result]
@@ -147,7 +150,7 @@ def getContestRatingChanges(contestId: int) -> Optional[List[RatingChange]]:
         "contestId": contestId,
     }
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [RatingChange.parse_obj(rc) for rc in result]
@@ -192,7 +195,7 @@ def getContestStandings(
         "showUnofficial": showUnofficial,
     }
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return ContestStandings.parse_obj(result)
@@ -227,7 +230,7 @@ def getContestStatus(
         "count": count,
     }
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Submission.parse_obj(submission) for submission in result]
@@ -255,7 +258,7 @@ def getProblemsetProblems(
         "problemsetName": problemsetName,
     }
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             problems, problemStatistics = result
@@ -286,7 +289,7 @@ def getProblemsetRecentStatus(
         "problemsetName": problemsetName,
     }
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Submission.parse_obj(sub) for sub in result]
@@ -311,7 +314,7 @@ def getRecentActions(maxCount: int) -> Optional[List[RecentAction]]:
         "maxCount": maxCount,
     }
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [RecentAction.parse_obj(recentAction) for recentAction in result]
@@ -336,7 +339,7 @@ def getUserBlogEntries(handle: str) -> Optional[List[BlogEntry]]:
         "handle": handle,
     }
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [BlogEntry.parse_obj(blogEntry) for blogEntry in result]
@@ -365,7 +368,7 @@ def getUserFriends(
     payload = getCfAuth(key, secret, methodName, payload)
 
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return result
@@ -391,7 +394,7 @@ def getUserInfo(handles: List[str]) -> Optional[List[User]]:
     }
 
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [User.parse_obj(user) for user in result]
@@ -423,7 +426,7 @@ def getUserRatedList(
     }
 
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [User.parse_obj(user) for user in result]
@@ -449,7 +452,7 @@ def getUserRating(handle: str) -> Optional[List[RatingChange]]:
     }
 
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [RatingChange.parse_obj(rc) for rc in result]
@@ -475,7 +478,7 @@ def getUserStatus(
     payload = {"handle": handle, "from": from_, "count": count}
 
     try:
-        r = requests.get(url, payload, timeout=timeout)
+        r = session.get(url, data=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Submission.parse_obj(sub) for sub in result]
