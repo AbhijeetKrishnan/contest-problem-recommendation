@@ -3,7 +3,7 @@ import secrets
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from requests.exceptions import ConnectionError, HTTPError, Timeout
 from requests_ratelimiter import LimiterSession
 
@@ -56,10 +56,12 @@ def getBlogEntryComments(blogEntryId: int) -> Optional[List[Comment]]:
     timeout = DEFAULT_TIMEOUT
     payload = {"blogEntryId": blogEntryId}
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Comment.parse_obj(comment) for comment in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -68,6 +70,8 @@ def getBlogEntryComments(blogEntryId: int) -> Optional[List[Comment]]:
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
@@ -79,10 +83,12 @@ def getBlogEntryView(blogEntryId: int) -> Optional[BlogEntry]:
     timeout = DEFAULT_TIMEOUT
     payload = {"blogEntryId": blogEntryId}
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return BlogEntry.parse_obj(result)
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -91,10 +97,14 @@ def getBlogEntryView(blogEntryId: int) -> Optional[BlogEntry]:
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
-def getContestHacks(contestId: int, asManager: Optional[bool]) -> Optional[List[Hack]]:
+def getContestHacks(
+    contestId: int, asManager: Optional[bool] = None
+) -> Optional[List[Hack]]:
     "Returns list of hacks in the specified contests. Full information about hacks is available only after some time after the contest end. During the contest user can see only own hacks."
 
     methodName = "contest.hacks"
@@ -102,10 +112,12 @@ def getContestHacks(contestId: int, asManager: Optional[bool]) -> Optional[List[
     timeout = DEFAULT_TIMEOUT
     payload = {"contestId": contestId, "asManager": asManager}
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Hack.parse_obj(hack) for hack in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -114,10 +126,12 @@ def getContestHacks(contestId: int, asManager: Optional[bool]) -> Optional[List[
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
-def getContestList(gym: Optional[bool]) -> Optional[List[Contest]]:
+def getContestList(gym: Optional[bool] = None) -> Optional[List[Contest]]:
     "Returns information about all available contests."
 
     methodName = "contest.list"
@@ -125,10 +139,12 @@ def getContestList(gym: Optional[bool]) -> Optional[List[Contest]]:
     timeout = DEFAULT_TIMEOUT
     payload = {"gym": gym}
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Contest.parse_obj(contest) for contest in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -137,6 +153,8 @@ def getContestList(gym: Optional[bool]) -> Optional[List[Contest]]:
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
@@ -150,10 +168,12 @@ def getContestRatingChanges(contestId: int) -> Optional[List[RatingChange]]:
         "contestId": contestId,
     }
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [RatingChange.parse_obj(rc) for rc in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -162,6 +182,8 @@ def getContestRatingChanges(contestId: int) -> Optional[List[RatingChange]]:
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
@@ -195,10 +217,12 @@ def getContestStandings(
         "showUnofficial": showUnofficial,
     }
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return ContestStandings.parse_obj(result)
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -207,12 +231,14 @@ def getContestStandings(
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
 def getContestStatus(
     contestId: int,
-    handle: str,
+    handle: Optional[str] = None,
     from_: Optional[int] = None,
     count: Optional[int] = None,
     asManager: Optional[bool] = None,
@@ -230,10 +256,12 @@ def getContestStatus(
         "count": count,
     }
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Submission.parse_obj(submission) for submission in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -242,11 +270,13 @@ def getContestStatus(
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
 def getProblemsetProblems(
-    tags: List[str], problemsetName: Optional[str] = None
+    tags: Optional[List[str]] = None, problemsetName: Optional[str] = None
 ) -> Optional[Tuple[List[Problem], List[ProblemStatistics]]]:
     "Returns all problems from problemset. Problems can be filtered by tags."
 
@@ -254,14 +284,17 @@ def getProblemsetProblems(
     url = f"{CF_API}/{methodName}"
     timeout = DEFAULT_TIMEOUT
     payload = {
-        "tags": ";".join(tags),
+        "tags": ";".join(tags) if tags else None,
         "problemsetName": problemsetName,
     }
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
-            problems, problemStatistics = result
+            problems, problemStatistics = (
+                result["problems"],
+                result["problemStatistics"],
+            )
             return [Problem.parse_obj(problem) for problem in problems], [
                 ProblemStatistics.parse_obj(probStat) for probStat in problemStatistics
             ]
@@ -273,11 +306,13 @@ def getProblemsetProblems(
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
 def getProblemsetRecentStatus(
-    count: int, problemsetName: Optional[str]
+    count: int, problemsetName: Optional[str] = None
 ) -> Optional[List[Submission]]:
     "Returns recent submissions."
 
@@ -289,10 +324,12 @@ def getProblemsetRecentStatus(
         "problemsetName": problemsetName,
     }
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Submission.parse_obj(sub) for sub in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -301,6 +338,8 @@ def getProblemsetRecentStatus(
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
@@ -314,10 +353,12 @@ def getRecentActions(maxCount: int) -> Optional[List[RecentAction]]:
         "maxCount": maxCount,
     }
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [RecentAction.parse_obj(recentAction) for recentAction in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -326,6 +367,8 @@ def getRecentActions(maxCount: int) -> Optional[List[RecentAction]]:
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
@@ -339,10 +382,12 @@ def getUserBlogEntries(handle: str) -> Optional[List[BlogEntry]]:
         "handle": handle,
     }
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [BlogEntry.parse_obj(blogEntry) for blogEntry in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -351,10 +396,12 @@ def getUserBlogEntries(handle: str) -> Optional[List[BlogEntry]]:
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
-def getUserFriends(
+def getUserFriends(  # TODO: test
     key: int, secret: int, onlyOnline: Optional[bool] = None
 ) -> Optional[List[str]]:
     "Returns authorized user's friends. Using this method requires authorization."
@@ -368,10 +415,12 @@ def getUserFriends(
     payload = getCfAuth(key, secret, methodName, payload)
 
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return result
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -394,10 +443,12 @@ def getUserInfo(handles: List[str]) -> Optional[List[User]]:
     }
 
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [User.parse_obj(user) for user in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -406,6 +457,8 @@ def getUserInfo(handles: List[str]) -> Optional[List[User]]:
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
@@ -426,10 +479,12 @@ def getUserRatedList(
     }
 
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [User.parse_obj(user) for user in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -438,6 +493,8 @@ def getUserRatedList(
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
@@ -452,10 +509,12 @@ def getUserRating(handle: str) -> Optional[List[RatingChange]]:
     }
 
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [RatingChange.parse_obj(rc) for rc in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -464,11 +523,13 @@ def getUserRating(handle: str) -> Optional[List[RatingChange]]:
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 
 def getUserStatus(
-    handle: str, from_: Optional[int], count: Optional[int]
+    handle: str, from_: Optional[int] = None, count: Optional[int] = None
 ) -> Optional[List[Submission]]:
     "Returns submissions of specified user."
 
@@ -478,10 +539,12 @@ def getUserStatus(
     payload = {"handle": handle, "from": from_, "count": count}
 
     try:
-        r = session.get(url, data=payload, timeout=timeout)
+        r = session.get(url, params=payload, timeout=timeout)
         if r.status_code == 200:
             result = r.json()["result"]
             return [Submission.parse_obj(sub) for sub in result]
+        else:
+            r.raise_for_status()
     except Timeout:
         print(f"Timeout on request to {methodName} after {timeout} seconds.")
     except ConnectionError:
@@ -490,6 +553,8 @@ def getUserStatus(
         print(
             f"Unsuccessful response code {err} on request to {methodName}. Response recieved is {r.json()}"
         )
+    except ValidationError as err:
+        print(f"Validation error {err} on request to {methodName}.")
     return None
 
 

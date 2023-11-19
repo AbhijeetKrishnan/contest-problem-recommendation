@@ -17,11 +17,11 @@ class User(BaseModel):
     "Represents a Codeforces user."
 
     handle: str
-    email: str
-    vkId: str
-    openId: str
+    email: Optional[str]
+    vkId: Optional[str]
+    openId: Optional[str]
     firstName: Optional[str]
-    lastNam: Optional[str]
+    lastName: Optional[str]
     country: Optional[str]
     city: Optional[str]
     organization: Optional[str]
@@ -45,7 +45,7 @@ class BlogEntry(BaseModel):
     creationTimeSeconds: NonNegativeInt
     authorHandle: str
     title: str
-    content: str
+    content: Optional[str]
     locale: str
     modificationTimeSeconds: NonNegativeInt
     allowViewHistory: bool
@@ -62,7 +62,7 @@ class Comment(BaseModel):
     locale: str
     text: str
     parentCommentId: Optional[int]
-    rating: NonNegativeInt
+    rating: StrictInt
 
 
 class RecentAction(BaseModel):
@@ -201,6 +201,7 @@ class TestSet(str, Enum):
     SAMPLES = "SAMPLES"
     PRETESTS = "PRETESTS"
     TESTS = "TESTS"
+    CHALLENGES = "CHALLENGES"
     TESTS1 = "TESTS1"
     TESTS2 = "TESTS2"
     TESTS3 = "TESTS3"
@@ -245,7 +246,7 @@ class HackVerdict(str, Enum):
 class JudgeProtocol(BaseModel):
     manual: bool
     protocol: str
-    verdict: HackVerdict
+    verdict: str
 
 
 class Hack(BaseModel):
