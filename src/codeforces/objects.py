@@ -1,8 +1,16 @@
 from enum import Enum
 from typing import List, Optional
 
-from pydantic import (BaseModel, Field, HttpUrl, NonNegativeFloat,
-                      NonNegativeInt, PositiveFloat, PositiveInt, StrictInt)
+from pydantic import (
+    BaseModel,
+    Field,
+    HttpUrl,
+    NonNegativeFloat,
+    NonNegativeInt,
+    PositiveFloat,
+    PositiveInt,
+    StrictInt,
+)
 
 
 class User(BaseModel):
